@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  telegraf:
+    container_name: telegraf
+    env_file: configuration.env
+    image: telegraf:1.29-alpine
+    volumes:
+      - ./telegraf/etc/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - influxdb
+    ports:
+      - '127.0.0.1:8125:8125/udp'
+    networks:
+      - tig_network
+
+  influxdb:
+    image: influxdb:1.8-alpine
+    env_file: configuration.env
+    ports:
+      - '127.0.0.1:8086:8086'
+    volumes:
+      - ./influxdb/init:/docker-entrypoint-initdb.d  # Assuming initialization scripts if needed
+      - influxdb_data:/var/lib/influxdb
+    networks:
+      - tig_network
+
+  grafana:
+    image: grafana/grafana:8.0.2
+    env_file: configuration.env
+    ports:
+      - '127.0.0.1:3000:3000'
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+      - ./grafana/dashboards/:/var/lib/grafana/dashboards/
+    networks:
+      - tig_network
+
+  mariadb:
+    image: mariadb:latest
+    command: --default-authentication-plugin=mysql_native_password --innodb-flush-log-at-trx-commit=0
+    env_file: configuration.env
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    ports:
+      - '3306:3306'
+    networks:
+      - tig_network
+
+volumes:
+  grafana_data:
+  influxdb_data:
+  mariadb_data:
+
+networks:
+  tig_network:

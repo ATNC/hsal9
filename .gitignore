@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+*.pyo
+*.pyz
+*.pyzw
+*.egg-info/
+dist/
+build/
+*.egg
+*.spec
+
+# Pip
+pip-wheel-metadata/
+*.log
+*.pot
+*.pyc
+*.pyo
+*.rej
+*.rdb
+*.orig
+*.swp
+*.swo
+*~
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+
+# OS
+.DS_Store
+
+# Virtual Environment
+.venv/
